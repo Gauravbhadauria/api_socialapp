@@ -12,7 +12,7 @@ const commentRouter = require("./routes/comments");
 dotenv.config();
 
 mongoose
-  .connect(process.env.MONGO_URL, {
+  .connect("mongodb+srv://gauravofficial2023:8raaDzIidfxMJUza@cluster0.5clbczd.mongodb.net/?retryWrites=true&w=majority", {
     useNewUrlParser: true,
     useUnifiedTopology: true,
   })
@@ -26,7 +26,7 @@ app.use(express.json());
 app.use(helmet());
 app.use(morgan("common"));
 app.use("/uploads", express.static("uploads"));
-
+//http://localhost:8200/uploads/1699628599163_myecom.png
 app.use("/socialapp/api/users", userRouter);
 app.use("/socialapp/api/auth", authRouter);
 app.use("/socialapp/api/post", postRouter);

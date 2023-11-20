@@ -2,8 +2,14 @@ const Post = require("../models/Post");
 
 const router = require("express").Router();
 const upload = require("../middleware/upload");
-//const s3client = require("@aws-sdk/client-s3");
-const putObjectCommand = require("@aws-sdk/client-s3");
+const {
+  S3Client,
+  ListBucketsCommand,
+  PutObjectCommand,
+  GetObjectCommand,
+} = require("@aws-sdk/client-s3");
+const { getSignedUrl } = require("@aws-sdk/s3-request-presigner");
+
 const crypto = require("crypto");
 const dotenv = require("dotenv");
 const AWS = require("aws-sdk");
@@ -19,53 +25,60 @@ const accessKey = process.env.AWS_ACCESS_KEY;
 const secretAccessKEy = process.env.AWS_SECRET_ACCESS_KEY;
 
 router.post("/add", upload.single("imageUrl"), async (req, res) => {
+  console.log(process.env.BUCKET_NAME);
   try {
     const newPost = new Post(req.body);
     console.log(req.file);
-    if (req.file) {
-      newPost.imageUrl = req.file.filename;
-    }
 
-    const s3 = new AWS.S3({
+    const clientParams = {
       credentials: {
         accessKeyId: accessKey,
         secretAccessKey: secretAccessKEy,
       },
       region: bucketRegion,
-    });
+    };
+    const s3 = new S3Client(clientParams);
     const params = {
       Bucket: bucketName,
       Key: randomImageName(),
       Body: req.file.buffer,
       ContentType: req.file.mimetype,
     };
-    await s3.putObject(params).promise();
+    const comman = new PutObjectCommand(params);
+    s3.send(comman);
+
+    const client = new S3Client(clientParams);
+    const command = new GetObjectCommand(params);
+    const url = await getSignedUrl(client, command, { expiresIn: 3600 });
 
     // get it back
-    let my_file = await s3
-      .getObject({
-        Bucket: bucketName,
-        Key: randomImageName(),
-      })
-      .promise();
+    // let my_file = await s3
+    //   .getObject({
+    //     Bucket: bucketName,
+    //     Key: randomImageName(),
+    //   })
+    //   .promise();
 
-    console.log(JSON.parse(my_file));
-    res.status(200).json(my_file);
+    // console.log(JSON.parse(my_file));
+    // res.status(200).json(my_file);
 
     // const command = new putObjectCommand(params);
     // s3.send(command);
-
-    // newPost
-    //   .save()
-    //   .then(() => {
-    //     res
-    //       .status(200)
-    //       .json({ status: true, message: "post aded successfully !" });
-    //   })
-    //   .catch((err) => {
-    //     res.status(500).json(err);
-    //   });
+    if (req.file) {
+      newPost.imageUrl = url;
+    }
+    newPost
+      .save()
+      .then(() => {
+        res
+          .status(200)
+          .json({ status: true, message: "post aded successfully !" });
+      })
+      .catch((err) => {
+        res.status(500).json(err);
+      });
   } catch (err) {
+    console.log(err);
     res.status(500).json(err);
   }
 });

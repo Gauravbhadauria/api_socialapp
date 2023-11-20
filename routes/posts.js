@@ -25,7 +25,7 @@ const accessKey = process.env.AWS_ACCESS_KEY;
 const secretAccessKEy = process.env.AWS_SECRET_ACCESS_KEY;
 
 router.post("/add", upload.single("imageUrl"), async (req, res) => {
-  console.log(process.env.BUCKET_NAME);
+  console.log(bucketRegion);
   try {
     const newPost = new Post(req.body);
     console.log(req.file);
@@ -46,7 +46,7 @@ router.post("/add", upload.single("imageUrl"), async (req, res) => {
       ContentType: req.file.mimetype,
     };
     const comman = new PutObjectCommand(params);
-    s3.send(comman);
+    await s3.send(comman);
 
     const client = new S3Client(clientParams);
     const command = new GetObjectCommand(params);

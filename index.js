@@ -25,7 +25,7 @@ mongoose
 app.use(express.json());
 app.use(helmet());
 app.use(morgan("common"));
-app.use("/temp", express.static("temp"));
+app.use("/uploads", express.static("uploads"));
 //http://localhost:8200/uploads/1699628599163_myecom.png
 app.use("/socialapp/api/users", userRouter);
 app.use("/socialapp/api/auth", authRouter);

@@ -2,13 +2,15 @@ const Post = require("../models/Post");
 
 const router = require("express").Router();
 const upload = require("../middleware/upload");
-const s3client = require("@aws-sdk/client-s3");
+//const s3client = require("@aws-sdk/client-s3");
 const putObjectCommand = require("@aws-sdk/client-s3");
-const crypto=require("crypto")
+const crypto = require("crypto");
 const dotenv = require("dotenv");
+const AWS = require("aws-sdk");
+
 dotenv.config();
 
-const randomImageName=()=>crypto.randomBytes(16).toString('hex')
+const randomImageName = () => crypto.randomBytes(16).toString("hex");
 
 //middleware
 const bucketName = process.env.BUCKET_NAME;
@@ -23,7 +25,8 @@ router.post("/add", upload.single("imageUrl"), async (req, res) => {
     if (req.file) {
       newPost.imageUrl = req.file.filename;
     }
-    const s3 = new s3client({
+
+    const s3 = new AWS.S3({
       credentials: {
         accessKeyId: accessKey,
         secretAccessKey: secretAccessKEy,
@@ -36,9 +39,21 @@ router.post("/add", upload.single("imageUrl"), async (req, res) => {
       Body: req.file.buffer,
       ContentType: req.file.mimetype,
     };
+    await s3.putObject(params).promise();
 
-    const command = new putObjectCommand(params);
-    s3.send(command);
+    // get it back
+    let my_file = await s3
+      .getObject({
+        Bucket: bucketName,
+        Key: randomImageName(),
+      })
+      .promise();
+
+    console.log(JSON.parse(my_file));
+    res.status(200).json(my_file);
+
+    // const command = new putObjectCommand(params);
+    // s3.send(command);
 
     // newPost
     //   .save()

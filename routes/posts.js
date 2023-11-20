@@ -13,10 +13,10 @@ dotenv.config();
 const randomImageName = () => crypto.randomBytes(16).toString("hex");
 
 //middleware
-const bucketName = "cyclic-bronze-lemming-fez-ap-south-1";
-const bucketRegion = "ap-south-1";
-const accessKey = "ASIAXGHFDILRGEKFIRKB";
-const secretAccessKEy = "UC5RX0MgR0GkvkhE18RuhTSV0P4oXmJcONt9YxU";
+const bucketName = process.env.BUCKET_NAME;
+const bucketRegion = process.env.BUCKET_REGION;
+const accessKey = process.env.AWS_ACCESS_KEY;
+const secretAccessKEy = process.env.AWS_SECRET_ACCESS_KEY;
 
 router.post("/add", upload.single("imageUrl"), async (req, res) => {
   try {

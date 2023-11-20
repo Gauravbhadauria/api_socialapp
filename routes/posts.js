@@ -2,25 +2,54 @@ const Post = require("../models/Post");
 
 const router = require("express").Router();
 const upload = require("../middleware/upload");
+const s3client = require("@aws-sdk/client-s3");
+const putObjectCommand = require("@aws-sdk/client-s3");
 
+const dotenv = require("dotenv");
+dotenv.config();
 //middleware
+const bucketName = process.env.BUCKET_NAME;
+const bucketRegion = process.env.BUCKET_REGION;
+const accessKey = process.env.AWS_ACCESS_KEY;
+const secretAccessKEy = process.env.AWS_SECRET_ACCESS_KEY;
+
+
 
 router.post("/add", upload.single("imageUrl"), async (req, res) => {
   try {
     const newPost = new Post(req.body);
+    console.log(req.file);
     if (req.file) {
       newPost.imageUrl = req.file.filename;
     }
-    newPost
-      .save()
-      .then(() => {
-        res
-          .status(200)
-          .json({ status: true, message: "post aded successfully !" });
-      })
-      .catch((err) => {
-        res.status(500).json(err);
-      });
+    const s3 = new s3client({
+      credentials: {
+        accessKeyId: accessKey,
+        secretAccessKey: secretAccessKEy,
+      },
+      region: bucketRegion,
+    });
+    const params = {
+      Bucket: bucketName,
+      Key: req.file.originalname,
+      Body: req.file.buffer,
+      ContentType: req.file.mimetype,
+    };
+
+    const command = new putObjectCommand(params);
+    s3.send(command);
+
+    res.send("hello");
+    // newPost
+    //   .save()
+    //   .then(() => {
+    //     res
+    //       .status(200)
+    //       .json({ status: true, message: "post aded successfully !" });
+    //   })
+    //   .catch((err) => {
+    //     res.status(500).json(err);
+    //   });
   } catch (err) {
     res.status(500).json(err);
   }

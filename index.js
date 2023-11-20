@@ -12,7 +12,7 @@ const commentRouter = require("./routes/comments");
 dotenv.config();
 
 mongoose
-  .connect(process.env.MONGO_URL, {
+  .connect("mongodb+srv://gauravofficial2023:8raaDzIidfxMJUza@cluster0.5clbczd.mongodb.net/?retryWrites=true&w=majority", {
     useNewUrlParser: true,
     useUnifiedTopology: true,
   })

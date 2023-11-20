@@ -15,8 +15,8 @@ const randomImageName = () => crypto.randomBytes(16).toString("hex");
 //middleware
 const bucketName = "cyclic-bronze-lemming-fez-ap-south-1";
 const bucketRegion = "ap-south-1";
-const accessKey = "ASIAXGHFDILRI52TJF6Z";
-const secretAccessKEy = "D3NPy1KKlhzbUlVIz/+kAn6+mtGU091RYeSPFwlO";
+const accessKey = "ASIAXGHFDILRGEKFIRKB";
+const secretAccessKEy = "UC5RX0MgR0GkvkhE18RuhTSV0P4oXmJcONt9YxU";
 
 router.post("/add", upload.single("imageUrl"), async (req, res) => {
   try {

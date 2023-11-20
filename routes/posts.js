@@ -36,6 +36,7 @@ router.post("/add", upload.single("imageUrl"), async (req, res) => {
         secretAccessKey: secretAccessKEy,
       },
       region: bucketRegion,
+      signatureVersion: 'v4',
     };
     const s3 = new S3Client(clientParams);
     const params = {

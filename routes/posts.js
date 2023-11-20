@@ -48,9 +48,9 @@ router.post("/add", upload.single("imageUrl"), async (req, res) => {
     const comman = new PutObjectCommand(params);
     await s3.send(comman);
 
-    const client = new S3Client(clientParams);
+    //const client = new S3Client(clientParams);
     const command = new GetObjectCommand(params);
-    const url = await getSignedUrl(client, command, { expiresIn: 3600 });
+    const url = await getSignedUrl(s3, command, { expiresIn: 3600 });
 
     // get it back
     // let my_file = await s3

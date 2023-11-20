@@ -4,16 +4,17 @@ const router = require("express").Router();
 const upload = require("../middleware/upload");
 const s3client = require("@aws-sdk/client-s3");
 const putObjectCommand = require("@aws-sdk/client-s3");
-
+const crypto=require("crypto")
 const dotenv = require("dotenv");
 dotenv.config();
+
+const randomImageName=()=>crypto.randomBytes(16).toString('hex')
+
 //middleware
 const bucketName = process.env.BUCKET_NAME;
 const bucketRegion = process.env.BUCKET_REGION;
 const accessKey = process.env.AWS_ACCESS_KEY;
 const secretAccessKEy = process.env.AWS_SECRET_ACCESS_KEY;
-
-
 
 router.post("/add", upload.single("imageUrl"), async (req, res) => {
   try {
@@ -31,7 +32,7 @@ router.post("/add", upload.single("imageUrl"), async (req, res) => {
     });
     const params = {
       Bucket: bucketName,
-      Key: req.file.originalname,
+      Key: randomImageName(),
       Body: req.file.buffer,
       ContentType: req.file.mimetype,
     };
@@ -39,7 +40,6 @@ router.post("/add", upload.single("imageUrl"), async (req, res) => {
     const command = new putObjectCommand(params);
     s3.send(command);
 
-    res.send("hello");
     // newPost
     //   .save()
     //   .then(() => {

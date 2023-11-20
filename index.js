@@ -31,6 +31,6 @@ app.use("/socialapp/api/users", userRouter);
 app.use("/socialapp/api/auth", authRouter);
 app.use("/socialapp/api/post", postRouter);
 app.use("/socialapp/api/post/comment", commentRouter);
-app.listen(8200, () => {
-  console.log("app is running on " + 8200);
+app.listen(8383, () => {
+  console.log("app is running on " + 8383);
 });

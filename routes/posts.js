@@ -24,50 +24,71 @@ const bucketRegion = process.env.BUCKET_REGION;
 const accessKey = process.env.AWS_ACCESS_KEY;
 const secretAccessKEy = process.env.AWS_SECRET_ACCESS_KEY;
 
-router.post("/add", upload.single("imageUrl"), async (req, res) => {
-  console.log(bucketRegion);
+// router.post("/add", upload.single("imageUrl"), async (req, res) => {
+//   console.log(bucketRegion);
+//   try {
+//     const newPost = new Post(req.body);
+//     console.log(req.file);
+
+//     const clientParams = {
+//       credentials: {
+//         accessKeyId: accessKey,
+//         secretAccessKey: secretAccessKEy,
+//       },
+//       region: bucketRegion,
+//       signatureVersion: 'v4',
+//     };
+//     const s3 = new S3Client(clientParams);
+//     const params = {
+//       Bucket: bucketName,
+//       Key: randomImageName(),
+//       Body: req.file.buffer,
+//       ContentType: req.file.mimetype,
+//     };
+//     const comman = new PutObjectCommand(params);
+//     await s3.send(comman);
+
+//     //const client = new S3Client(clientParams);
+//     const command = new GetObjectCommand(params);
+//     const url = await getSignedUrl(s3, command, { expiresIn: 3600 });
+
+//     // get it back
+//     // let my_file = await s3
+//     //   .getObject({
+//     //     Bucket: bucketName,
+//     //     Key: randomImageName(),
+//     //   })
+//     //   .promise();
+
+//     // console.log(JSON.parse(my_file));
+//     // res.status(200).json(my_file);
+
+//     // const command = new putObjectCommand(params);
+//     // s3.send(command);
+//     if (req.file) {
+//       newPost.imageUrl = req.body.imageUrl;
+//     }
+//     newPost
+//       .save()
+//       .then(() => {
+//         res
+//           .status(200)
+//           .json({ status: true, message: "post aded successfully !" });
+//       })
+//       .catch((err) => {
+//         res.status(500).json(err);
+//       });
+//   } catch (err) {
+//     console.log(err);
+//     res.status(500).json(err);
+//   }
+// });
+
+//update post
+
+router.post("/add", async (req, res) => {
   try {
     const newPost = new Post(req.body);
-    console.log(req.file);
-
-    const clientParams = {
-      credentials: {
-        accessKeyId: accessKey,
-        secretAccessKey: secretAccessKEy,
-      },
-      region: bucketRegion,
-      signatureVersion: 'v4',
-    };
-    const s3 = new S3Client(clientParams);
-    const params = {
-      Bucket: bucketName,
-      Key: randomImageName(),
-      Body: req.file.buffer,
-      ContentType: req.file.mimetype,
-    };
-    const comman = new PutObjectCommand(params);
-    await s3.send(comman);
-
-    //const client = new S3Client(clientParams);
-    const command = new GetObjectCommand(params);
-    const url = await getSignedUrl(s3, command, { expiresIn: 3600 });
-
-    // get it back
-    // let my_file = await s3
-    //   .getObject({
-    //     Bucket: bucketName,
-    //     Key: randomImageName(),
-    //   })
-    //   .promise();
-
-    // console.log(JSON.parse(my_file));
-    // res.status(200).json(my_file);
-
-    // const command = new putObjectCommand(params);
-    // s3.send(command);
-    if (req.file) {
-      newPost.imageUrl = url;
-    }
     newPost
       .save()
       .then(() => {
@@ -83,8 +104,6 @@ router.post("/add", upload.single("imageUrl"), async (req, res) => {
     res.status(500).json(err);
   }
 });
-
-//update post
 
 router.put("/update/:id", async (req, res) => {
   try {

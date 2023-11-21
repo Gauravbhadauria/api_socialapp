@@ -31,6 +31,7 @@ app.use("/socialapp/api/users", userRouter);
 app.use("/socialapp/api/auth", authRouter);
 app.use("/socialapp/api/post", postRouter);
 app.use("/socialapp/api/post/comment", commentRouter);
-app.listen(8383, () => {
-  console.log("app is running on " + 8383);
+const PORT=process.env.PORT || 8383
+app.listen(PORT, () => {
+  console.log("app is running on " + PORT);
 });

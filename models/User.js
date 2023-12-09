@@ -28,6 +28,7 @@ const UserSchema = new mongoose.Schema(
       type: String,
       max: 50,
       required: true,
+
     },
     dob: {
       type: String,
@@ -36,12 +37,17 @@ const UserSchema = new mongoose.Schema(
     address: {
       type: String,
       max: 50,
+      default:""
     },
     profilePic: {
       type: String,
       default: "",
     },
     coverPic: {
+      type: String,
+      default: "",
+    },
+    bio:{
       type: String,
       default: "",
     },

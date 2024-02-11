@@ -1,4 +1,4 @@
-const express = require("express");
+ const express = require("express");
 const app = express();
 
 const morgan = require("morgan");
@@ -11,6 +11,7 @@ const postRouter = require("./routes/posts");
 const commentRouter = require("./routes/comments");
 const conversationRoute=require("./routes/conversations")
 const messageRoute=require("./routes/messages")
+const jobRouter=require("./routes/jobs")
 dotenv.config();
 
 mongoose
@@ -35,6 +36,7 @@ app.use("/socialapp/api/post", postRouter);
 app.use("/socialapp/api/post/comment", commentRouter);
 app.use("/socialapp/api/conversations", conversationRoute);
 app.use("/socialapp/api/messages", messageRoute);
+app.use("/socialapp/api/jobs", jobRouter)
 const PORT=process.env.PORT || 8383
 app.listen(PORT, () => {
   console.log("app is running on " + PORT);
